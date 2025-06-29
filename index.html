@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Facebook - Connexion ou inscription</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="fb-body">
+  <div class="fb-wrapper">
+    <!-- Partie gauche -->
+    <div class="fb-left">
+      <img src="assets/images/logo.png" alt="Logo Facebook" class="fb-logo-img">
+      <h1 class="fb-title">facebook</h1>
+      <p class="fb-text">Avec Facebook, partagez et restez en contact avec votre entourage.</p>
+    </div>
+
+    <!-- Partie droite -->
+    <div class="fb-right">
+      <form id="indexLoginForm">
+        <input type="email" name="email" id="index-email" placeholder="Adresse e-mail ou téléphone" required>
+        <input type="password" name="mot_de_passe" id="index-password" placeholder="Mot de passe" required>
+        <button type="submit" class="fb-btn-blue">Se connecter</button>
+      </form>
+
+      <div id="indexLoginMessage" class="fb-message"></div>
+
+      <a href="#" class="fb-link">Mot de passe oublié ?</a>
+      <hr>
+      <a href="vues/clients/register.html">
+        <button class="fb-btn-green">Créer un nouveau compte</button>
+      </a>
+    </div>
+  </div>
+
+  <div class="fb-footer">
+    Créer une <a href="#">Page</a> pour une célébrité, une marque ou une entreprise.
+  </div>
+
+  <script src="assets/js/index-login.js"></script>
+</body>
+</html>

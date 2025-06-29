@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Créer un compte | Facebook</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="fb-body">
+  <div class="fb-wrapper">
+    <!-- Colonne gauche -->
+    <div class="fb-left">
+      <img src="../../assets/images/logo.png" alt="Logo Facebook" class="fb-logo-img">
+      <h1 class="fb-title">facebook</h1>
+      <p class="fb-text">Inscrivez-vous pour voir ce que vos amis partagent.</p>
+    </div>
+
+    <!-- Colonne droite : formulaire -->
+    <div class="fb-right">
+      <h2 class="fb-form-title">Créer un compte</h2>
+
+      <form id="registerForm">
+        <input type="text" name="nom" placeholder="Nom" required>
+        <input type="text" name="prenom" placeholder="Prénom" required>
+        <input type="date" name="date_naissance" required>
+
+        <label class="fb-sexe-label">Sexe ?</label>
+        <div class="fb-radio-group">
+          <label><input type="radio" name="sexe" value="Homme" required> Homme</label>
+          <label><input type="radio" name="sexe" value="Femme"> Femme</label>
+        </div>
+
+        <input type="email" name="email" placeholder="Adresse e-mail" required>
+        <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
+
+        <p class="fb-conditions-text">
+          En cliquant sur S’inscrire, vous acceptez nos Conditions générales, notre Politique de confidentialité 
+          et notre Politique d’utilisation des cookies. Vous recevrez peut-être des notifications de notre part.
+          <br>J'accepte les <a href="#">conditions d'utilisation</a>.
+        </p>
+
+        <div class="fb-conditions-checkbox">
+          <label>
+            <input type="checkbox" name="conditions" required> Je confirme
+          </label>
+        </div>
+
+        <button type="submit" class="fb-btn-green">Créer un compte</button>
+      </form>
+
+      <div id="registerMessage" class="fb-message"></div>
+    </div>
+  </div>
+
+  <!-- Script JS externe -->
+  <script src="../../assets/js/register.js"></script>
+</body>
+</html>
