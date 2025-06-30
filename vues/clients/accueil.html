@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Facebook - Accueil</title>
+  <link rel="stylesheet" href="../../assets/css/accueil.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <header class="fb-header">
+    <div class="fb-header-left">
+      <div class="fb-logo">facebook</div>
+      <input type="search" placeholder="Rechercher sur Facebook" class="fb-search" />
+    </div>
+    <div class="fb-header-center">
+      <button class="fb-icon-btn active" title="Accueil">🏠</button>
+      <button class="fb-icon-btn" title="Amis">👥</button>
+      <button class="fb-icon-btn" title="Messages">💬</button>
+      <button class="fb-icon-btn" title="Notifications">🔔</button>
+    </div>
+    <div class="fb-header-right">
+      <div class="fb-user-avatar">JD</div>
+      <button class="fb-icon-btn">▼</button>
+    </div>
+  </header>
+
+  <div class="fb-container">
+    <nav class="fb-sidebar-left">
+      <ul>
+        <li>John Doe</li>
+        <li>Fil d'actualité</li>
+        <li>Messenger</li>
+        <li>Groupes</li>
+        <li>Pages</li>
+        <li>Événements</li>
+      </ul>
+    </nav>
+
+    <main class="fb-main-feed" id="articlesContainer">
+      <!-- Articles s'affichent ici -->
+    </main>
+
+    <aside class="fb-sidebar-right">
+      <h3>Suggestions d'amis</h3>
+      <ul>
+        <li>Marie Dupont <button>Ajouter</button></li>
+        <li>Paul Martin <button>Ajouter</button></li>
+        <li>Anna Smith <button>Ajouter</button></li>
+      </ul>
+    </aside>
+  </div>
+
+  <script src="../../assets/js/accueil.js"></script>
+</body>
+</html>
