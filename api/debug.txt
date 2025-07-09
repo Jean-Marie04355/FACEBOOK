@@ -1,0 +1,12 @@
+Array
+(
+    [nom] => audrey
+    [prenom] => foot
+    [date_naissance] => 2004-02-03
+    [sexe] => Homme
+    [email] => audreydohou32@gmail.com
+    [mot_de_passe] => 1saicre2
+    [conditions] => on
+)
+
+sessionStorage.setItem('user', JSON.stringify(result.user));

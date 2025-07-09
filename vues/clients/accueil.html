@@ -14,12 +14,13 @@
     </div>
     <div class="fb-header-center">
       <button class="fb-icon-btn active" title="Accueil">🏠</button>
-      <button class="fb-icon-btn" title="Amis">👥</button>
+      <button class="fb-icon-btn" title="Amis" id="showUsers">👥</button>
       <button class="fb-icon-btn" title="Messages">💬</button>
       <button class="fb-icon-btn" title="Notifications">🔔</button>
     </div>
     <div class="fb-header-right">
-      <div class="fb-user-avatar">JD</div>
+      <div class="fb-user-avatar" id="userAvatar"></div>
+      <span id="userName"></span>
       <button class="fb-icon-btn">▼</button>
     </div>
   </header>
@@ -27,7 +28,7 @@
   <div class="fb-container">
     <nav class="fb-sidebar-left">
       <ul>
-        <li>John Doe</li>
+        <li id="sidebarUserName"></li>
         <li>Fil d'actualité</li>
         <li>Messenger</li>
         <li>Groupes</li>
@@ -40,14 +41,16 @@
       <!-- Articles s'affichent ici -->
     </main>
 
-    <aside class="fb-sidebar-right">
+    <aside class="fb-sidebar-right" id="suggestionsAside" style="display:none;">
       <h3>Suggestions d'amis</h3>
-      <ul>
-        <li>Marie Dupont <button>Ajouter</button></li>
-        <li>Paul Martin <button>Ajouter</button></li>
-        <li>Anna Smith <button>Ajouter</button></li>
-      </ul>
+      <ul id="suggestionsList"></ul>
     </aside>
+  </div>
+
+  <div id="usersListModal" style="display:none; position:fixed; top:80px; left:0; right:0; margin:auto; max-width:400px; background:#fff; border-radius:8px; box-shadow:0 2px 10px #0002; z-index:1000; padding:20px;">
+    <h2>Utilisateurs inscrits</h2>
+    <ul id="usersUl"></ul>
+    <button onclick="document.getElementById('usersListModal').style.display='none'">Fermer</button>
   </div>
 
   <script src="../../assets/js/accueil.js"></script>
