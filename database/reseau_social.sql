@@ -143,6 +143,24 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `nom`, `prenom`, `email`, `mot_de_passe`, `sexe`, `date_naissance`, `photo_profil`, `role`, `date_inscription`, `statut`) VALUES
 (1, 'OKOTCHE', 'Jean-Marie', 'oktcjean@gmail.com', '$2y$10$mqoykBjL.idR4/2N8cEyPex5NyE/sVrBshrB/zBWYwHCZ59ULfRvi', 'Homme', '2003-08-04', NULL, 'user', '2025-06-27 18:22:48', 'actif');
 
+-- --------------------------------------------------------
+
+-- Structure de la table `invitations`
+--
+CREATE TABLE `invitations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sender_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `status` enum('pending','accepted','declined') DEFAULT 'pending',
+  `sent_at` datetime DEFAULT current_timestamp(),
+  `responded_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sender_id` (`sender_id`),
+  KEY `receiver_id` (`receiver_id`),
+  CONSTRAINT `invitations_sender_fk` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `invitations_receiver_fk` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Index pour les tables déchargées
 --

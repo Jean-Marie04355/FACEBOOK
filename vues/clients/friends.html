@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Facebook - Mes amis</title>
+  <link rel="stylesheet" href="../../assets/css/accueil.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    .friends-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .friends-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .friend-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .friend-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .friend-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #1877f2;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 24px;
+      margin: 0 auto 15px;
+    }
+    
+    .friend-name {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    
+    .friend-date {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .no-friends {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      padding: 40px;
+    }
+    
+    .back-btn {
+      background: #1877f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    
+    .back-btn:hover {
+      background: #166fe5;
+    }
+    
+    .friends-count {
+      color: #666;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="friends-container">
+    <button class="back-btn" onclick="window.location.href='accueil.html'">← Retour à l'accueil</button>
+    <h1>Mes amis</h1>
+    <div class="friends-count" id="friendsCount"></div>
+    <div class="friends-grid" id="friendsGrid">
+      <!-- Les amis s'afficheront ici -->
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      // Récupère l'utilisateur connecté depuis sessionStorage
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      if (!user) {
+        window.location.href = '../login.html';
+        return;
+      }
+
+      loadFriends();
+    });
+
+    function loadFriends() {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      
+      fetch(`../../api/get_friends.php?user_id=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          const friendsGrid = document.getElementById('friendsGrid');
+          const friendsCount = document.getElementById('friendsCount');
+          
+          if (data.success && data.friends.length > 0) {
+            friendsCount.textContent = `${data.friends.length} ami${data.friends.length > 1 ? 's' : ''}`;
+            friendsGrid.innerHTML = '';
+            data.friends.forEach(friend => {
+              const friendElement = createFriendElement(friend);
+              friendsGrid.appendChild(friendElement);
+            });
+          } else {
+            friendsCount.textContent = '0 ami';
+            friendsGrid.innerHTML = '<div class="no-friends">Vous n\'avez pas encore d\'amis</div>';
+          }
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          document.getElementById('friendsGrid').innerHTML = 
+            '<div class="no-friends">Erreur lors du chargement de vos amis</div>';
+        });
+    }
+
+    function createFriendElement(friend) {
+      const div = document.createElement('div');
+      div.className = 'friend-card';
+      
+      const initials = (friend.prenom[0] + friend.nom[0]).toUpperCase();
+      const fullName = friend.prenom + ' ' + friend.nom;
+      const date = new Date(friend.date_action).toLocaleDateString('fr-FR');
+      
+      div.innerHTML = `
+        <div class="friend-avatar">${initials}</div>
+        <div class="friend-name">${fullName}</div>
+        <div class="friend-date">Ami depuis le ${date}</div>
+      `;
+      
+      return div;
+    }
+  </script>
+</body>
+</html> 

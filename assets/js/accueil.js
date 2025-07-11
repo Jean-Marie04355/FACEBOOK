@@ -139,31 +139,126 @@ window.addEventListener('DOMContentLoaded', function() {
   renderFeed();
 
   const showUsersBtn = document.getElementById('showUsers');
+  const showInvitationsBtn = document.getElementById('showInvitations');
   const suggestionsAside = document.getElementById('suggestionsAside');
   const suggestionsList = document.getElementById('suggestionsList');
 
-  if (showUsersBtn && suggestionsAside && suggestionsList) {
-    showUsersBtn.addEventListener('click', function() {
-      suggestionsAside.style.display = 'block';
 
-      fetch(`../../api/get_users.php?user_id=${user.id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            suggestionsList.innerHTML = '';
-            data.users.forEach(u => {
-              const li = document.createElement('li');
-              li.textContent = u.prenom + ' ' + u.nom + ' ';
-              const btn = document.createElement('button');
-              btn.textContent = 'Ajouter';
-              btn.onclick = function() {
-                alert('Invitation envoyée à ' + u.prenom + ' ' + u.nom);
-              };
-              li.appendChild(btn);
-              suggestionsList.appendChild(li);
-            });
-          }
-        });
+
+  // Gestionnaire pour le bouton des invitations
+  if (showInvitationsBtn) {
+    showInvitationsBtn.addEventListener('click', function() {
+      window.location.href = 'invitations.html';
     });
+  }
+
+  // Gestionnaire pour le bouton des amis (double-clic)
+  if (showUsersBtn) {
+    let clickCount = 0;
+    let clickTimer = null;
+    
+    showUsersBtn.addEventListener('click', function() {
+      clickCount++;
+      
+      if (clickCount === 1) {
+        clickTimer = setTimeout(() => {
+          // Clic simple : afficher les suggestions d'amis
+          suggestionsAside.style.display = 'block';
+          loadUserSuggestions();
+          clickCount = 0;
+        }, 200);
+      } else {
+        // Double-clic : aller à la page des amis
+        clearTimeout(clickTimer);
+        clickCount = 0;
+        window.location.href = 'friends.html';
+      }
+    });
+  }
+
+  function loadUserSuggestions() {
+    fetch(`../../api/get_users.php?user_id=${user.id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          suggestionsList.innerHTML = '';
+          data.users.forEach(u => {
+            const li = document.createElement('li');
+            li.textContent = u.prenom + ' ' + u.nom + ' ';
+            const btn = document.createElement('button');
+            btn.textContent = 'Ajouter';
+            btn.onclick = function() {
+              sendInvitation(user.id, u.id, u.prenom + ' ' + u.nom);
+            };
+            li.appendChild(btn);
+            suggestionsList.appendChild(li);
+          });
+        }
+      });
+  }
+
+  // Fonction pour envoyer une invitation
+  function sendInvitation(senderId, receiverId, receiverName) {
+    fetch('../../api/send_invitation.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender_id: senderId,
+        receiver_id: receiverId
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showNotification('Invitation envoyée à ' + receiverName, 'success');
+      } else {
+        showNotification(data.message, 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Erreur:', error);
+      showNotification('Erreur lors de l\'envoi de l\'invitation', 'error');
+    });
+  }
+
+  // Fonction pour afficher les notifications
+  function showNotification(message, type = 'info') {
+    // Créer l'élément de notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      z-index: 10000;
+      max-width: 300px;
+      word-wrap: break-word;
+    `;
+    
+    // Couleurs selon le type
+    if (type === 'success') {
+      notification.style.backgroundColor = '#4CAF50';
+    } else if (type === 'error') {
+      notification.style.backgroundColor = '#f44336';
+    } else {
+      notification.style.backgroundColor = '#2196F3';
+    }
+    
+    // Ajouter au DOM
+    document.body.appendChild(notification);
+    
+    // Supprimer après 3 secondes
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 3000);
   }
 });
