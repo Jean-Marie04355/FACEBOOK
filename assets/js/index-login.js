@@ -17,7 +17,13 @@ document.getElementById('indexLoginForm').addEventListener('submit', async funct
 
     if (result.success) {
       sessionStorage.setItem('user', JSON.stringify(result.user));
-      window.location.href = 'vues/clients/accueil.html';
+
+      // 🔁 Redirection selon le rôle
+      if (result.user.role === 'admin') {
+        window.location.href = 'admin/dashboard.html';
+      } else {
+        window.location.href = 'vues/clients/accueil.html';
+      }
     }
 
   } catch (error) {

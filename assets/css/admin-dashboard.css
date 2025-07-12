@@ -1,0 +1,52 @@
+/* assets/css/admin-dashboard.css */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+}
+
+.admin-header {
+  background: #1877f2;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-nav {
+  background: #fff;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.admin-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+.admin-nav li {
+  cursor: pointer;
+  padding: 10px 15px;
+  background-color: #eee;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.admin-nav li:hover {
+  background-color: #ddd;
+  font-weight: bold;
+}
+
+.admin-content {
+  padding: 20px;
+}
+
+.admin-section {
+  display: none;
+}
+
+.admin-section.active {
+  display: block;
+}
