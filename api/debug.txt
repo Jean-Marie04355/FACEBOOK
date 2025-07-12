@@ -1,0 +1,10 @@
+Array
+(
+    [nom] => OKOTCHE
+    [prenom] => Jean-Marie
+    [date_naissance] => 2002-08-04
+    [sexe] => Homme
+    [email] => oktcjean@gmail.com
+    [mot_de_passe] => 1234567898
+    [conditions] => on
+)
