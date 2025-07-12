@@ -9,7 +9,7 @@ require_once __DIR__ . '/config.php';
 function reponse($success, $message) {
     echo json_encode(['success' => $success, 'message' => $message]);
     // temporaire
-file_put_contents("debug.txt", print_r($_POST, true));
+    file_put_contents("debug.txt", print_r($_POST, true));
 
     exit;
 }
