@@ -1,0 +1,21 @@
+<!-- vues/admin/login.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion Admin</title>
+  <link rel="stylesheet" href="../../assets/css/admin-login.css">
+</head>
+<body>
+  <div class="admin-login-container">
+    <h2>Connexion Admin / Modérateur</h2>
+    <form id="adminLoginForm">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
+      <button type="submit">Se connecter</button>
+    </form>
+    <div id="adminLoginMessage" class="fb-message"></div>
+  </div>
+  <script src="../../assets/js/admin-login.js"></script>
+</body>
+</html>

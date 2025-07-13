@@ -1,0 +1,39 @@
+<!-- vues/admin/dashboard.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau de Bord Admin</title>
+  <link rel="stylesheet" href="../../assets/css/admin-dashboard.css">
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Tableau de bord Administrateur</h1>
+    <button onclick="logout()">Déconnexion</button>
+  </header>
+
+  <nav class="admin-nav">
+    <ul>
+      <li onclick="showSection('utilisateurs')">🔒 Utilisateurs</li>
+      <li onclick="showSection('publications')">📄 Publications</li>
+      <li onclick="showSection('commentaires')">🚨 Commentaires</li>
+      <li onclick="showSection('roles')">🧑‍💼 Rôles</li>
+      <li onclick="showSection('stats')">📊 Statistiques</li>
+      <li onclick="showSection('maintenance')">💾 Maintenance</li>
+      <li onclick="showSection('settings')">⚙️ Paramètres</li>
+    </ul>
+  </nav>
+
+  <main class="admin-content">
+    <section id="utilisateurs" class="admin-section">Chargement utilisateurs...</section>
+    <section id="publications" class="admin-section" style="display:none;">Chargement publications...</section>
+    <section id="commentaires" class="admin-section" style="display:none;">Chargement commentaires...</section>
+    <section id="roles" class="admin-section" style="display:none;">Chargement rôles...</section>
+    <section id="stats" class="admin-section" style="display:none;">Chargement statistiques...</section>
+    <section id="maintenance" class="admin-section" style="display:none;">Sauvegarde, mise à jour...</section>
+    <section id="settings" class="admin-section" style="display:none;">Paramètres du site...</section>
+  </main>
+
+  <script src="../../assets/js/admin-dashboard.js"></script>
+</body>
+</html>
