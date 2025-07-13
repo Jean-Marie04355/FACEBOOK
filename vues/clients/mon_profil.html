@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mon profil</title>
+  <link rel="stylesheet" href="../../assets/css/accueil.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    .profile-container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px #0001;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #1877f2;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: bold;
+      margin: 0 auto 20px;
+      overflow: hidden;
+    }
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .profile-form input[type="text"],
+    .profile-form input[type="email"],
+    .profile-form input[type="password"] {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .profile-form label {
+      text-align: left;
+      font-weight: bold;
+    }
+    .profile-form button {
+      background: #1877f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .profile-form button:hover {
+      background: #166fe5;
+    }
+    .success-msg {
+      color: #4CAF50;
+      margin-bottom: 10px;
+    }
+          .error-msg {
+        color: #f44336;
+        margin-bottom: 10px;
+      }
+      .back-home-btn {
+        background: #42b883;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .back-home-btn:hover {
+        background: #369870;
+      }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h1>Mon profil</h1>
+    <div class="profile-avatar" id="profileAvatar"></div>
+    <form class="profile-form" id="profileForm" enctype="multipart/form-data">
+      <div class="success-msg" id="successMsg" style="display:none;"></div>
+      <div class="error-msg" id="errorMsg" style="display:none;"></div>
+      <label>Prénom
+        <input type="text" id="prenom" required />
+      </label>
+      <label>Nom
+        <input type="text" id="nom" required />
+      </label>
+      <label>Email
+        <input type="email" id="email" required />
+      </label>
+      <label>Nouveau mot de passe (laisser vide pour ne pas changer)
+        <input type="password" id="password" autocomplete="new-password" />
+      </label>
+      <label>Photo de profil
+        <input type="file" id="photo_profil" accept="image/*" />
+      </label>
+      <div id="photoPreview" style="margin-bottom:10px;"></div>
+      <button type="button" id="deletePhotoBtn" style="background:#888;display:none;">Supprimer la photo</button>
+      <button type="submit">Enregistrer les modifications</button>
+    </form>
+    <button id="backHomeBtn" class="back-home-btn">Retour à l'accueil</button>
+  </div>
+  <script>
+    // Charger les infos de l'utilisateur connecté
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    if (!user) {
+      window.location.href = 'login.html';
+    }
+    document.getElementById('prenom').value = user.prenom;
+    document.getElementById('nom').value = user.nom;
+    document.getElementById('email').value = user.email;
+    // Avatar
+    const avatarDiv = document.getElementById('profileAvatar');
+    if (user.photo_profil) {
+      avatarDiv.innerHTML = `<img src="../../assets/images/${user.photo_profil}" alt="avatar">`;
+    } else {
+      avatarDiv.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+    }
+
+    // Gestion du formulaire
+    document.getElementById('profileForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const prenom = document.getElementById('prenom').value.trim();
+      const nom = document.getElementById('nom').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const photoInput = document.getElementById('photo_profil');
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg = document.getElementById('errorMsg');
+      successMsg.style.display = 'none';
+      errorMsg.style.display = 'none';
+      let photoFileName = user.photo_profil;
+      // Upload photo si sélectionnée
+      if (photoInput.files && photoInput.files[0]) {
+        const file = photoInput.files[0];
+        const allowedTypes = ['image/jpeg','image/png','image/gif','image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+          errorMsg.textContent = 'Format non autorisé (jpg, png, gif, webp)';
+          errorMsg.style.display = 'block';
+          return;
+        }
+        if (file.size > 2*1024*1024) {
+          errorMsg.textContent = 'Fichier trop volumineux (max 2 Mo)';
+          errorMsg.style.display = 'block';
+          return;
+        }
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('user_id', user.id);
+        const uploadRes = await fetch('../../api/upload_profile_photo.php', {
+          method: 'POST',
+          body: formData
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.success) {
+          photoFileName = uploadData.file;
+          user.photo_profil = photoFileName;
+          sessionStorage.setItem('user', JSON.stringify(user));
+          avatarDiv.innerHTML = `<img src="../../assets/images/${photoFileName}" alt="avatar">`;
+          deletePhotoBtn.style.display = '';
+        } else {
+          errorMsg.textContent = uploadData.message;
+          errorMsg.style.display = 'block';
+          return;
+        }
+      }
+      fetch('../../api/update_profile.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: user.id,
+          prenom,
+          nom,
+          email,
+          password,
+          photo_profil: photoFileName
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          successMsg.textContent = data.message;
+          successMsg.style.display = 'block';
+          user.prenom = prenom;
+          user.nom = nom;
+          user.email = email;
+          user.photo_profil = photoFileName;
+          sessionStorage.setItem('user', JSON.stringify(user));
+          
+          // Mettre à jour l'avatar dans l'en-tête sans rechargement
+          const headerAvatar = document.getElementById('headerUserAvatar');
+          if (headerAvatar) {
+            if (photoFileName) {
+              headerAvatar.innerHTML = `<img src="../../assets/images/${photoFileName}" alt="avatar" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+              headerAvatar.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+            }
+          }
+          
+          // Mettre à jour le nom dans l'en-tête
+          const headerName = document.getElementById('userName');
+          if (headerName) {
+            headerName.textContent = user.prenom + ' ' + user.nom;
+          }
+          
+          // Mettre à jour l'avatar dans la sidebar
+          const sidebarAvatar = document.getElementById('sidebarAvatar');
+          if (sidebarAvatar) {
+            if (photoFileName) {
+              sidebarAvatar.innerHTML = `<img src="../../assets/images/${photoFileName}" alt="avatar" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+              sidebarAvatar.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+            }
+          }
+          
+          // Mettre à jour le nom dans la sidebar
+          const sidebarName = document.getElementById('sidebarUserName');
+          if (sidebarName) {
+            sidebarName.textContent = user.prenom + ' ' + user.nom;
+          }
+
+        } else {
+          errorMsg.textContent = data.message;
+          errorMsg.style.display = 'block';
+        }
+      })
+      .catch(() => {
+        errorMsg.textContent = "Erreur lors de la mise à jour.";
+        errorMsg.style.display = 'block';
+      });
+    };
+    // Retour à l'accueil
+    document.getElementById('backHomeBtn').onclick = function() {
+      window.location.href = 'accueil.html';
+    };
+
+    // Prévisualisation de la photo
+    const photoInput = document.getElementById('photo_profil');
+    const photoPreview = document.getElementById('photoPreview');
+    const deletePhotoBtn = document.getElementById('deletePhotoBtn');
+    function showPreview(file) {
+      if (!file) { photoPreview.innerHTML = ''; return; }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        photoPreview.innerHTML = `<img src="${e.target.result}" alt="preview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;">`;
+      };
+      reader.readAsDataURL(file);
+    }
+    photoInput.onchange = function() {
+      const file = photoInput.files[0];
+      if (!file) { photoPreview.innerHTML = ''; return; }
+      // Vérification taille/format côté front
+      const allowedTypes = ['image/jpeg','image/png','image/gif','image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        photoPreview.innerHTML = '<span style="color:#f44336;">Format non autorisé (jpg, png, gif, webp)</span>';
+        photoInput.value = '';
+        return;
+      }
+      if (file.size > 2*1024*1024) {
+        photoPreview.innerHTML = '<span style="color:#f44336;">Fichier trop volumineux (max 2 Mo)</span>';
+        photoInput.value = '';
+        return;
+      }
+      showPreview(file);
+    };
+    // Afficher bouton suppression si photo existante
+    if (user.photo_profil) {
+      deletePhotoBtn.style.display = '';
+    }
+    deletePhotoBtn.onclick = function() {
+      if (!confirm('Supprimer la photo de profil ?')) return;
+      fetch('../../api/delete_profile_photo.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user.id, file: user.photo_profil })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          user.photo_profil = null;
+          sessionStorage.setItem('user', JSON.stringify(user));
+          avatarDiv.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+          photoPreview.innerHTML = '';
+          deletePhotoBtn.style.display = 'none';
+          
+          // Mettre à jour l'avatar dans l'en-tête sans rechargement
+          const headerAvatar = document.getElementById('headerUserAvatar');
+          if (headerAvatar) {
+            headerAvatar.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+          }
+          
+          // Mettre à jour l'avatar dans la sidebar
+          const sidebarAvatar = document.getElementById('sidebarAvatar');
+          if (sidebarAvatar) {
+            sidebarAvatar.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+          }
+        } else {
+          errorMsg.textContent = data.message;
+          errorMsg.style.display = 'block';
+        }
+      })
+      .catch(() => {
+        errorMsg.textContent = 'Erreur lors de la suppression.';
+        errorMsg.style.display = 'block';
+      });
+    };
+  </script>
+</body>
+</html> 

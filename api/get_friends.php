@@ -31,16 +31,14 @@ try {
             a.date_action
         FROM amis a
         JOIN users u ON (
-            CASE 
-                WHEN a.id_user1 = ? THEN a.id_user2 = u.id
-                WHEN a.id_user2 = ? THEN a.id_user1 = u.id
-            END
+            (a.id_user1 = :user_id AND a.id_user2 = u.id)
+            OR (a.id_user2 = :user_id AND a.id_user1 = u.id)
         )
-        WHERE (a.id_user1 = ? OR a.id_user2 = ?) 
+        WHERE (a.id_user1 = :user_id OR a.id_user2 = :user_id) 
         AND a.statut = 'accepte'
         ORDER BY a.date_action DESC
     ");
-    $stmt->execute([$user_id, $user_id, $user_id, $user_id]);
+    $stmt->execute(['user_id' => $user_id]);
     $friends = $stmt->fetchAll();
     
     echo json_encode([

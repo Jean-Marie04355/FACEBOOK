@@ -1,10 +1,10 @@
 Array
 (
-    [nom] => dohou
-    [prenom] => audey
-    [date_naissance] => 2004-06-23
+    [nom] => bignon
+    [prenom] => bignon
+    [date_naissance] => 2004-02-02
     [sexe] => Homme
-    [email] => erciasdohou32@gmail.com
-    [mot_de_passe] => 1audrey2@.com
+    [email] => bignon@gmail.com
+    [mot_de_passe] => 1bignon2@.com
     [conditions] => on
 )

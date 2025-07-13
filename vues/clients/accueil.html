@@ -20,16 +20,27 @@
       <button class="fb-icon-btn" title="Notifications">🔔</button>
     </div>
     <div class="fb-header-right">
-      <div class="fb-user-avatar" id="userAvatar"></div>
-      <span id="userName"></span>
-      <button class="fb-icon-btn">▼</button>
+      <!-- Avatar de l'utilisateur  -->
+      <div id="headerUserAvatar" style="width:40px;height:40px;border-radius:50%;background:#1877f2;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;margin-right:10px;overflow:hidden;margin-left:-20px; margin: top -30px;"></div>
+      <!-- Conteneur pour le nom et le bouton de déconnexion -->
+      <div style="display:flex;flex-direction:row;align-items:center;margin-right:10px;margin-left:-20px; margin-top:-10px;">
+        <!-- Nom de l'utilisateur -->
+        <span id="userName" style="font-size:14px;margin-right:10px;"></span>
+        <!-- Bouton de déconnexion -->
+        <button id="logoutBtn" style="background:#f44336;color:white;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-weight:bold;font-size:12px;">Déconnexion</button>
+      </div>
+      <!-- Bouton menu déroulant -->
     </div>
   </header>
 
   <div class="fb-container">
     <nav class="fb-sidebar-left">
       <ul>
-        <li id="sidebarUserName"></li>
+        <li id="sidebarUserAvatar" style="display:flex;align-items:center;gap:10px;padding:10px 0;">
+          <div id="sidebarAvatar" style="width:40px;height:40px;border-radius:50%;background:#1877f2;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;overflow:hidden;"></div>
+          <span id="sidebarUserName"></span>
+        </li>
+        <li><a href="mon_profil.html" style="text-decoration:none;color:inherit;display:block;padding:8px 0;">Mon profil</a></li>
         <li>Fil d'actualité</li>
         <li>Messenger</li>
         <li>Groupes</li>

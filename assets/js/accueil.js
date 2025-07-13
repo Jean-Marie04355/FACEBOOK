@@ -5,22 +5,41 @@ window.addEventListener('DOMContentLoaded', function() {
     window.location.href = 'login.html'; // Redirige si pas connecté
   }
 
-  // Affiche les initiales dans l'avatar
-  const avatarDiv = document.getElementById('userAvatar');
-  if (avatarDiv) {
-    avatarDiv.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+  // ===== AFFICHAGE DE L'AVATAR ET DU NOM DANS L'EN-TÊTE =====
+  
+  // Récupération de l'élément avatar dans l'en-tête
+  const headerAvatarDiv = document.getElementById('headerUserAvatar');
+  
+  // Vérification si l'utilisateur a une photo de profil
+  if (headerAvatarDiv) {
+    if (user.photo_profil) {
+      // Si l'utilisateur a une photo de profil, on l'affiche
+      headerAvatarDiv.innerHTML = `<img src="../../assets/images/${user.photo_profil}" alt="avatar" style="width:100%;height:100%;object-fit:cover;">`;
+    } else {
+      // Sinon, on affiche les initiales de l'utilisateur
+      const initiales = (user.prenom[0] + user.nom[0]).toUpperCase();
+      headerAvatarDiv.textContent = initiales;
+    }
   }
 
-  // Affiche le nom complet à côté de l'avatar
+  // Affichage du nom complet de l'utilisateur
   const nameSpan = document.getElementById('userName');
   if (nameSpan) {
     nameSpan.textContent = user.prenom + ' ' + user.nom;
   }
 
-  // Affiche le nom dans la sidebar
+  // Affiche l'avatar et le nom dans la sidebar
   const sidebarName = document.getElementById('sidebarUserName');
+  const sidebarAvatar = document.getElementById('sidebarAvatar');
   if (sidebarName) {
     sidebarName.textContent = user.prenom + ' ' + user.nom;
+  }
+  if (sidebarAvatar) {
+    if (user.photo_profil) {
+      sidebarAvatar.innerHTML = `<img src="../../assets/images/${user.photo_profil}" alt="avatar" style="width:100%;height:100%;object-fit:cover;">`;
+    } else {
+      sidebarAvatar.textContent = (user.prenom[0] + user.nom[0]).toUpperCase();
+    }
   }
 
   const articles = [
@@ -152,6 +171,17 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Gestionnaire pour le bouton de déconnexion
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function() {
+      if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+        sessionStorage.clear();
+        window.location.href = '../../index.html';
+      }
+    });
+  }
+
   // Gestionnaire pour le bouton des amis (double-clic)
   if (showUsersBtn) {
     let clickCount = 0;
@@ -163,7 +193,7 @@ window.addEventListener('DOMContentLoaded', function() {
       if (clickCount === 1) {
         clickTimer = setTimeout(() => {
           // Clic simple : afficher les suggestions d'amis
-          suggestionsAside.style.display = 'block';
+      suggestionsAside.style.display = 'block';
           loadUserSuggestions();
           clickCount = 0;
         }, 200);
@@ -177,24 +207,32 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function loadUserSuggestions() {
-    fetch(`../../api/get_users.php?user_id=${user.id}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          suggestionsList.innerHTML = '';
-          data.users.forEach(u => {
-            const li = document.createElement('li');
-            li.textContent = u.prenom + ' ' + u.nom + ' ';
-            const btn = document.createElement('button');
-            btn.textContent = 'Ajouter';
-            btn.onclick = function() {
+      fetch(`../../api/get_users.php?user_id=${user.id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            suggestionsList.innerHTML = '';
+            data.users.forEach(u => {
+              const li = document.createElement('li');
+              li.textContent = u.prenom + ' ' + u.nom + ' ';
+              const btn = document.createElement('button');
+              btn.textContent = 'Ajouter';
+              btn.onclick = function() {
               sendInvitation(user.id, u.id, u.prenom + ' ' + u.nom);
+              };
+              li.appendChild(btn);
+            // Ajout du bouton Voir profil
+            const profileBtn = document.createElement('button');
+            profileBtn.textContent = 'Voir profil';
+            profileBtn.style.marginLeft = '8px';
+            profileBtn.onclick = function() {
+              window.location.href = `profile.html?id=${u.id}`;
             };
-            li.appendChild(btn);
-            suggestionsList.appendChild(li);
-          });
-        }
-      });
+            li.appendChild(profileBtn);
+              suggestionsList.appendChild(li);
+            });
+          }
+        });
   }
 
   // Fonction pour envoyer une invitation

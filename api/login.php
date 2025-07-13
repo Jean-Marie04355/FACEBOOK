@@ -11,7 +11,7 @@ if (empty($email) || empty($mot_de_passe)) {
 }
 
 try {
-    $stmt = $pdo->prepare("SELECT id, nom, prenom, email, mot_de_passe FROM users WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT id, nom, prenom, email, mot_de_passe, photo_profil FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
@@ -23,7 +23,8 @@ try {
                 'id' => $user['id'],
                 'nom' => $user['nom'],
                 'prenom' => $user['prenom'],
-                'email' => $user['email']
+                'email' => $user['email'],
+                'photo_profil' => $user['photo_profil']
             ]
         ]);
     } else {

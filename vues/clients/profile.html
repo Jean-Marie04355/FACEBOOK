@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profil utilisateur</title>
+  <link rel="stylesheet" href="../../assets/css/accueil.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    .profile-container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px #0001;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #1877f2;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      font-weight: bold;
+      margin: 0 auto 20px;
+      overflow: hidden;
+    }
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .profile-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .profile-info {
+      color: #444;
+      margin-bottom: 8px;
+    }
+    .back-btn {
+      background: #1877f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .back-btn:hover {
+      background: #166fe5;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container" id="profileContainer">
+    <button class="back-btn" onclick="window.history.back()">← Retour</button>
+    <div id="profileContent">Chargement...</div>
+  </div>
+  <script>
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    function renderProfile(user) {
+      let avatarHtml = '';
+      if (user.photo_profil) {
+        avatarHtml = `<img src="../../assets/images/${user.photo_profil}" alt="avatar">`;
+      } else {
+        const initials = (user.prenom[0] + user.nom[0]).toUpperCase();
+        avatarHtml = initials;
+      }
+      return `
+        <div class="profile-avatar">${avatarHtml}</div>
+        <div class="profile-name">${user.prenom} ${user.nom}</div>
+        <div class="profile-info"><b>Email :</b> ${user.email}</div>
+        <div class="profile-info"><b>Sexe :</b> ${user.sexe || '-'}</div>
+        <div class="profile-info"><b>Date de naissance :</b> ${user.date_naissance || '-'}</div>
+        <div class="profile-info"><b>Rôle :</b> ${user.role}</div>
+        <div class="profile-info"><b>Date d'inscription :</b> ${new Date(user.date_inscription).toLocaleDateString('fr-FR')}</div>
+        <div class="profile-info"><b>Statut :</b> ${user.statut}</div>
+      `;
+    }
+
+    function renderPosts(posts) {
+      if (!posts.length) return '<div style="color:#888;">Aucun post.</div>';
+      return posts.map(post => `
+        <div style="border:1px solid #eee; border-radius:8px; margin:15px 0; padding:12px; text-align:left;">
+          <div style="color:#1877f2;font-weight:bold;">${new Date(post.date_post).toLocaleDateString('fr-FR')}</div>
+          <div style="margin:8px 0;">${post.contenu ? post.contenu : ''}</div>
+          ${post.image ? `<img src="../../assets/images/${post.image}" alt="post" style="max-width:100%;border-radius:6px;">` : ''}
+        </div>
+      `).join('');
+    }
+
+    function renderFriends(friends) {
+      if (!friends.length) return '<div style="color:#888;">Aucun ami.</div>';
+      return `<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">` +
+        friends.map(f => {
+          const initials = (f.prenom[0] + f.nom[0]).toUpperCase();
+          let avatar = f.photo_profil ? `<img src='../../assets/images/${f.photo_profil}' alt='avatar' style='width:40px;height:40px;border-radius:50%;object-fit:cover;'>` : `<div style='width:40px;height:40px;border-radius:50%;background:#1877f2;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;'>${initials}</div>`;
+          return `<div style='text-align:center;'>
+            <a href="profile.html?id=${f.id}" style="text-decoration:none;color:inherit;">
+              ${avatar}<br>
+              <span style='font-size:14px;'>${f.prenom} ${f.nom}</span>
+            </a>
+          </div>`;
+        }).join('') + '</div>';
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      const userId = getQueryParam('id');
+      const profileContent = document.getElementById('profileContent');
+      if (!userId) {
+        profileContent.textContent = "Aucun utilisateur sélectionné.";
+        return;
+      }
+      fetch(`../../api/get_user_profile.php?id=${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            let html = renderProfile(data.user);
+            html += `<h2 style='margin-top:32px;'>Posts</h2><div id='userPosts'>Chargement...</div>`;
+            html += `<h2 style='margin-top:32px;'>Amis</h2><div id='userFriends'>Chargement...</div>`;
+            profileContent.innerHTML = html;
+            // Charger les posts
+            fetch(`../../api/get_user_posts.php?user_id=${userId}`)
+              .then(res => res.json())
+              .then(postsData => {
+                document.getElementById('userPosts').innerHTML = postsData.success ? renderPosts(postsData.posts) : 'Erreur posts';
+              });
+            // Charger les amis
+            fetch(`../../api/get_friends.php?user_id=${userId}`)
+              .then(res => res.json())
+              .then(friendsData => {
+                document.getElementById('userFriends').innerHTML = friendsData.success ? renderFriends(friendsData.friends) : 'Erreur amis';
+              });
+          } else {
+            profileContent.textContent = data.message;
+          }
+        })
+        .catch(() => {
+          profileContent.textContent = "Erreur lors du chargement du profil.";
+        });
+    });
+  </script>
+</body>
+</html> 
