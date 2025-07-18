@@ -4,7 +4,7 @@
 $host = 'localhost';         // hôte MySQL (ou IP si distant)
 $dbname = 'reseau_social';   // nom de ta base de données
 $username = 'root';          // utilisateur MySQL (par défaut en local)
-$password = 'root';            // mot de passe root pour MAMP (pas de mot de passe)
+$password = '';            // mot de passe root pour MAMP (pas de mot de passe)
 
 $charset = 'utf8mb4';        // encodage
 $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
