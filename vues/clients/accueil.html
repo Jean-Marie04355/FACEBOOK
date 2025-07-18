@@ -50,6 +50,18 @@
     </nav>
 
     <main class="fb-main-feed" id="articlesContainer">
+      <!-- Formulaire de publication -->
+      <section id="postFormSection" style="margin-bottom: 24px;">
+        <form id="postForm" enctype="multipart/form-data" style="background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 8px #0001;display:flex;flex-direction:column;gap:10px;">
+          <textarea name="contenu" id="postContent" rows="3" placeholder="Exprimez-vous..." style="resize:none;padding:8px;border-radius:5px;border:1px solid #ccc;"></textarea>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <input type="file" name="image" id="postImage" accept="image/*">
+            <input type="file" name="video" id="postVideo" accept="video/*">
+            <button type="submit" style="background:#1877f2;color:white;border:none;padding:8px 16px;border-radius:5px;cursor:pointer;font-weight:bold;">Publier</button>
+          </div>
+          <div id="postFormMessage" style="color:red;font-size:13px;"></div>
+        </form>
+      </section>
       <!-- Articles s'affichent ici -->
     </main>
 
