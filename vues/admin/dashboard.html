@@ -1,39 +1,99 @@
-<!-- vues/admin/dashboard.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Tableau de Bord Admin</title>
+  <title>Admin | Facebook</title>
   <link rel="stylesheet" href="../../assets/css/admin-dashboard.css">
 </head>
 <body>
-  <header class="admin-header">
-    <h1>Tableau de bord Administrateur</h1>
-    <button onclick="logout()">Déconnexion</button>
-  </header>
 
-  <nav class="admin-nav">
-    <ul>
-      <li onclick="showSection('utilisateurs')">🔒 Utilisateurs</li>
-      <li onclick="showSection('publications')">📄 Publications</li>
-      <li onclick="showSection('commentaires')">🚨 Commentaires</li>
-      <li onclick="showSection('roles')">🧑‍💼 Rôles</li>
-      <li onclick="showSection('stats')">📊 Statistiques</li>
-      <li onclick="showSection('maintenance')">💾 Maintenance</li>
-      <li onclick="showSection('settings')">⚙️ Paramètres</li>
-    </ul>
-  </nav>
+  <div class="dashboard-wrapper">
 
-  <main class="admin-content">
-    <section id="utilisateurs" class="admin-section">Chargement utilisateurs...</section>
-    <section id="publications" class="admin-section" style="display:none;">Chargement publications...</section>
-    <section id="commentaires" class="admin-section" style="display:none;">Chargement commentaires...</section>
-    <section id="roles" class="admin-section" style="display:none;">Chargement rôles...</section>
-    <section id="stats" class="admin-section" style="display:none;">Chargement statistiques...</section>
-    <section id="maintenance" class="admin-section" style="display:none;">Sauvegarde, mise à jour...</section>
-    <section id="settings" class="admin-section" style="display:none;">Paramètres du site...</section>
-  </main>
+    <!-- Barre latérale -->
+    <aside class="sidebar">
+      <div class="logo">facebook</div>
+      <ul class="nav">
+        <li onclick="showSection('utilisateurs')" id="menu-utilisateurs">🔒 Utilisateurs</li>
+        <li onclick="showSection('publications')" id="menu-publications">📄 Publications</li>
+        <li onclick="showSection('commentaires')" id="menu-commentaires">🚨 Commentaires</li>
+        <li onclick="showSection('roles')" id="menu-roles">🧑‍💼 Rôles</li>
+        <li onclick="showSection('statistiques')" id="menu-statistiques">📊 Statistiques</li>
+        <li onclick="showSection('maintenance')" id="menu-maintenance">💾 Maintenance</li>
+        <li onclick="showSection('settings')" id="menu-settings">⚙️ Paramètres</li>
+        <li onclick="logout()">🚪 Déconnexion</li>
+      </ul>
+    </aside>
 
+    <!-- Contenu principal -->
+    <main class="dashboard-content">
+      <h1 class="page-title">Tableau de bord Administrateur</h1>
+
+      <section id="utilisateurs" class="admin-section active">Chargement des utilisateurs...</section>
+      <section id="publications" class="admin-section">Chargement des publications...</section>
+      <section id="commentaires" class="admin-section">Chargement des commentaires...</section>
+      <section id="roles" class="admin-section">Gestion des rôles...</section>
+
+      <!-- ✅ SECTION STATISTIQUES CORRIGÉE -->
+     <section id="statistiques" class="admin-section">
+  <h2>📊 Statistiques</h2>
+
+  <div class="stats-container">
+    <div class="stat-card" id="stat-total-users">👥 Utilisateurs : ...</div>
+    <div class="stat-card" id="stat-admins">👑 Admins : ...</div>
+    <div class="stat-card" id="stat-moderateurs">🧑‍⚖️ Modérateurs : ...</div>
+    <div class="stat-card" id="stat-users">🙋 Utilisateurs simples : ...</div>
+    <div class="stat-card" id="stat-posts">📝 Publications : ...</div>
+  </div>
+
+  <h3>🎯 Répartition des rôles</h3>
+  <canvas id="rolesChart" width="400" height="200"></canvas>
+
+  <
+  <h3>📅 Activité mensuelle combinée</h3>
+<canvas id="monthlyCombinedChart" width="600" height="300" style="max-width: 100%;"></canvas>
+
+</section>
+
+      <section id="maintenance" class="admin-section">Maintenance et sauvegarde...</section>
+      <section id="settings" class="admin-section">Paramètres généraux du site...</section>
+    </main>
+  </div>
+
+  <!-- JS principal -->
   <script src="../../assets/js/admin-dashboard.js"></script>
+
+  <!-- Modal de modification utilisateur -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h2>Modifier un utilisateur</h2>
+      <form id="editForm">
+        <input type="hidden" name="id" id="edit-id">
+
+        <label for="edit-nom">Nom :</label>
+        <input type="text" id="edit-nom" name="nom" required>
+
+        <label for="edit-prenom">Prénom :</label>
+        <input type="text" id="edit-prenom" name="prenom" required>
+
+        <label for="edit-email">Email :</label>
+        <input type="email" id="edit-email" name="email" required>
+
+        <label for="edit-role">Rôle :</label>
+        <select id="edit-role" name="user_role">
+          <option value="user">Utilisateur</option>
+          <option value="moderator">Modérateur</option>
+          <option value="admin">Administrateur</option>
+        </select>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn-blue">Enregistrer</button>
+          <button type="button" onclick="fermerModal()">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
