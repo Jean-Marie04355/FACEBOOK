@@ -86,7 +86,8 @@ CREATE TABLE `messages` (
   `destinataire_id` int(11) NOT NULL,
   `texte` text DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `date_envoi` datetime DEFAULT current_timestamp()
+  `date_envoi` datetime DEFAULT current_timestamp(),
+  `vu` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -312,6 +313,13 @@ ALTER TABLE `posts`
 --
 ALTER TABLE `reset_tokens`
   ADD CONSTRAINT `reset_tokens_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `users`
+--
+ALTER TABLE users 
+  MODIFY nom VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  MODIFY prenom VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

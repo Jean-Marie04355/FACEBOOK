@@ -10,14 +10,18 @@
   <header class="fb-header">
     <div class="fb-header-left">
       <div class="fb-logo">facebook</div>
-      <input type="search" placeholder="Rechercher sur Facebook" class="fb-search" />
     </div>
     <div class="fb-header-center">
       <button class="fb-icon-btn active" title="Accueil">🏠</button>
       <button class="fb-icon-btn" title="Amis" id="showUsers">👥</button>
       <button class="fb-icon-btn" title="Invitations" id="showInvitations">📨</button>
-      <button class="fb-icon-btn" title="Messages">💬</button>
+      <button class="fb-icon-btn" title="Messages" id="openChatSidebar">💬</button>
       <button class="fb-icon-btn" title="Notifications">🔔</button>
+      <div class="global-user-search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="globalSearchUserInput" placeholder="Rechercher un ami...">
+        <ul id="globalSearchResultsList"></ul>
+      </div>
     </div>
     <div class="fb-header-right">
       <!-- Avatar de l'utilisateur  -->
@@ -32,6 +36,34 @@
       <!-- Bouton menu déroulant -->
     </div>
   </header>
+  <!-- Sidebar du chat -->
+  <div id="chatSidebar">
+    <button id="closeChatSidebar">&times;</button>
+    <div id="chatUsersList"></div>
+    <div id="chatBox" style="display:none; flex-direction:column; flex:1;">
+      <div id="chatUserName"></div>
+      <div id="chatMessages" style="flex:1; overflow-y:auto;"></div>
+      <form id="chatForm" style="display:flex; gap:8px;">
+        <input id="chatInput" type="text" placeholder="Écrire un message..." style="flex:1;">
+        <input id="chatImage" type="file" accept="image/*">
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Section Invitations (masquée par défaut) -->
+  <div id="invitationsSection" style="display:none; max-width:600px; margin:40px auto 0 auto;">
+    <h2 style="text-align:center; color:#1877f2; margin-bottom:18px;">Invitations</h2>
+    <button id="backToFeedBtn" style="margin-bottom:18px; background:#1877f2; color:#fff; border:none; border-radius:6px; padding:8px 18px; font-size:15px; cursor:pointer;">← Retour à l’accueil</button>
+    <div id="invitationsRecuesBloc">
+      <h3 style="color:#222; margin-bottom:8px;">Invitations reçues</h3>
+      <div id="invitationsContainer"></div>
+    </div>
+    <div id="invitationsEnvoyeesBloc" style="margin-top:32px;">
+      <h3 style="color:#222; margin-bottom:8px;">Invitations envoyées</h3>
+      <div id="sentInvitationsContainer"></div>
+    </div>
+  </div>
 
   <div class="fb-container">
     <nav class="fb-sidebar-left">
@@ -40,12 +72,12 @@
           <div id="sidebarAvatar" style="width:40px;height:40px;border-radius:50%;background:#1877f2;color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;overflow:hidden;"></div>
           <span id="sidebarUserName"></span>
         </li>
-        <li><a href="mon_profil.html" style="text-decoration:none;color:inherit;display:block;padding:8px 0;">Mon profil</a></li>
-        <li>Fil d'actualité</li>
-        <li>Messenger</li>
-        <li>Groupes</li>
-        <li>Pages</li>
-        <li>Événements</li>
+        <li><a href="mon_profil.html"><span class="icon">👤</span> Mon profil</a></li>
+        <li><a href="#"><span class="icon">📰</span> Fil d'actualité</a></li>
+        <li><a href="#"><span class="icon">💬</span> Messenger</a></li>
+        <li><a href="#"><span class="icon">👥</span> Groupes</a></li>
+        <li><a href="#"><span class="icon">📄</span> Pages</a></li>
+        <li><a href="#"><span class="icon">📅</span> Événements</a></li>
       </ul>
     </nav>
 
@@ -75,6 +107,38 @@
     <h2>Utilisateurs inscrits</h2>
     <ul id="usersUl"></ul>
     <button onclick="document.getElementById('usersListModal').style.display='none'">Fermer</button>
+  </div>
+
+  <!-- Sidebar Chat -->
+  <!-- Messenger Chat Overlay -->
+  <div id="messengerOverlay">
+    <div id="messengerSidebar">
+      <div class="messenger-header">Discussions</div>
+      <ul id="messengerFriendsList"></ul>
+    </div>
+    <div id="messengerChatArea">
+      <button id="closeMessengerCompletely" class="messenger-close-btn" aria-label="Fermer Messenger" title="Fermer Messenger">✕</button>
+      <div id="messengerChatHeader" class="messenger-chat-header" style="display:none;">
+        <button id="backToFriendsBtn" aria-label="Retour aux amis" title="Retour aux amis" style="background:none; border:none; color:#1877f2; font-size:18px; cursor:pointer; margin-right:10px;">←</button>
+        <img id="messengerChatAvatar" class="messenger-avatar" src="" alt="Avatar">
+        <span id="messengerChatName"></span>
+        <button id="closeMessengerOverlay" aria-label="Fermer le chat" title="Fermer le chat">&#10005;</button>
+      </div>
+      <div id="messengerAvatarWelcome" class="messenger-avatar-welcome">
+        <span style="font-size:38px; color:#1877f2;">💬</span>
+        <div style="color:#1877f2; font-size:18px; font-weight:500; margin-top:8px;">Sélectionne un ami pour discuter</div>
+      </div>
+      <div id="messengerWelcome" class="messenger-welcome" style="display:none;"></div>
+      <div id="messengerMessages" style="display:none;"></div>
+      <form id="messengerForm" style="display:none;">
+        <input id="messengerInput" type="text" placeholder="Écrire un message..." autocomplete="off" />
+        <input id="messengerImage" type="file" accept="image/*" style="display:none;" />
+        <button type="button" id="messengerImageBtn" title="Envoyer une image">📷</button>
+        <button type="submit" id="messengerSendBtn" title="Envoyer">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </form>
+    </div>
   </div>
 
   <script src="../../assets/js/accueil.js"></script>
