@@ -1,19 +1,10 @@
 Array
 (
-<<<<<<< HEAD
-    [nom] => bignon
-    [prenom] => bignon
-    [date_naissance] => 2004-02-02
+    [nom] => AUDRE
+    [prenom] => ercias
+    [date_naissance] => 2002-02-14
     [sexe] => Homme
-    [email] => bignon@gmail.com
-    [mot_de_passe] => 1bignon2@.com
-=======
-    [nom] => OKOTCHE
-    [prenom] => Jean-Marie
-    [date_naissance] => 2002-08-04
-    [sexe] => Homme
-    [email] => oktcjean@gmail.com
-    [mot_de_passe] => 1234567898
->>>>>>> 02eb1ae30dfb30d43b789a806582c38131e86df4
+    [email] => audreercias@gmail.com
+    [mot_de_passe] => 123456jun@
     [conditions] => on
 )

@@ -4,6 +4,10 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET');
 
 require_once 'config.php';
+// Affichage des erreurs pour debug
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Vérifier que c'est une requête GET
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -31,14 +35,19 @@ try {
             a.date_action
         FROM amis a
         JOIN users u ON (
-            (a.id_user1 = :user_id AND a.id_user2 = u.id)
-            OR (a.id_user2 = :user_id AND a.id_user1 = u.id)
+            (a.id_user1 = :user_id1 AND a.id_user2 = u.id)
+            OR (a.id_user2 = :user_id2 AND a.id_user1 = u.id)
         )
-        WHERE (a.id_user1 = :user_id OR a.id_user2 = :user_id) 
+        WHERE (a.id_user1 = :user_id3 OR a.id_user2 = :user_id4) 
         AND a.statut = 'accepte'
         ORDER BY a.date_action DESC
     ");
-    $stmt->execute(['user_id' => $user_id]);
+    $stmt->execute([
+        'user_id1' => $user_id,
+        'user_id2' => $user_id,
+        'user_id3' => $user_id,
+        'user_id4' => $user_id
+    ]);
     $friends = $stmt->fetchAll();
     
     echo json_encode([
@@ -48,6 +57,6 @@ try {
     
 } catch (PDOException $e) {
     error_log("Erreur base de données: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Erreur lors de la récupération des amis']);
+    echo json_encode(['success' => false, 'message' => 'Erreur SQL: ' . $e->getMessage()]);
 }
 ?> 

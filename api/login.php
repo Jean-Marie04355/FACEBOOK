@@ -21,7 +21,7 @@ try {
             'success' => true,
             'message' => 'Connexion réussie !',
             'user' => [
-                'id' => $user['id'],
+                'id' => isset($user['id']) ? (int)$user['id'] : 0,
                 'nom' => $user['nom'],
                 'prenom' => $user['prenom'],
                 'email' => $user['email'],
